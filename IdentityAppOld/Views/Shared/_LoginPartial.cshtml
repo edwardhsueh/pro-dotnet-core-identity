@@ -1,0 +1,18 @@
+@* The asp-area and asp-page tags work together to create a link for the Index Razor Page in the Account/Manage folder of the Identity UI package. *@
+<nav class="nav">
+    @if (User.Identity.IsAuthenticated) {
+        <a asp-area="Identity" asp-page="/Account/Manage/Index"
+            class="nav-link bg-secondary text-white">
+                @User.Identity.Name
+        </a>
+        <a asp-area="Identity" asp-page="/Account/Logout"
+            class="nav-link bg-secondary text-white">
+                Logout
+        </a>
+    } else {
+        <a asp-area="Identity" asp-page="/Account/Login"
+                class="nav-link bg-secondary text-white">
+            Login/Register
+        </a>
+    }
+</nav>
