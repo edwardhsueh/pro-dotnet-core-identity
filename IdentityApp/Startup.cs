@@ -30,6 +30,21 @@ namespace IdentityApp {
                 opts.HttpsPort = 44350;
             });
             services.AddScoped<IEmailSender, ConsoleEmailSender>();
+            services.AddAuthentication()
+                    .AddGoogle(options =>
+                    {
+                        IConfigurationSection googleAuthNSection =
+                            Configuration.GetSection("Authentication:Google");
+
+                        options.ClientId = googleAuthNSection["ClientId"];
+                        options.ClientSecret = googleAuthNSection["ClientSecret"];
+                    })
+                    .AddFacebook(facebookOptions =>
+                    {
+                        facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                        facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                    });                    
+            ;            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
