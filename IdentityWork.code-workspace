@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "IdentityDotnet"
+		},
+		{
+			"path": "..\\identityWithQRcode\\IdentityAppEnableQRCode"
 		}
 	]
 }

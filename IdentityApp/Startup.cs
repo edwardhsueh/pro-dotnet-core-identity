@@ -6,7 +6,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using IdentityApp.Models;
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using IdentityApp.Services;
 namespace IdentityApp {
 
     public class Startup {
@@ -26,6 +29,7 @@ namespace IdentityApp {
             services.AddHttpsRedirection(opts => {
                 opts.HttpsPort = 44350;
             });
+            services.AddScoped<IEmailSender, ConsoleEmailSender>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
