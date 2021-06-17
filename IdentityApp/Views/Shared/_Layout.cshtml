@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - IdentityDotnet</title>
     <link rel="stylesheet" href="~/lib/twitter-bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -32,6 +33,7 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <partial name="_NavigationPartial" />
             @RenderBody()
         </main>
     </div>
@@ -41,23 +43,9 @@
             &copy; 2021 - IdentityDotnet - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/query.min.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/twitter-bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
-
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Identity App</title>
-    <link href="/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-</head>
-<body>
-    <partial name="_NavigationPartial" />
-    @RenderBody()
 </body>
 </html>
