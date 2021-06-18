@@ -9,5 +9,6 @@ namespace IdentityApp.Controllers {
         public HomeController(ProductDbContext ctx) => DbContext = ctx;
 
         public IActionResult Index() => View(DbContext.Products);
+        public IActionResult Privacy() => View();
     }
 }

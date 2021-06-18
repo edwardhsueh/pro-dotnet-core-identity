@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using IdentityApp.Services;
+using IdentityApp.Areas.Identity.Data;
+
 namespace IdentityApp {
 
     public class Startup {
@@ -29,6 +31,24 @@ namespace IdentityApp {
             services.AddHttpsRedirection(opts => {
                 opts.HttpsPort = 44350;
             });
+            //    
+            // for Identity
+            //
+            services.AddDbContext<IdentityAppIdentityDbContext>(options => { 
+                options.UseSqlServer(
+                   Configuration["ConnectionStrings:IdentityAppIdentityDbContextConnection"]);
+            });       
+            // The user class is declared when configuring Identity in the Startup class. Here is the statement that sets up Identity in the example application: There is a default class, named IdentityUser
+            services.AddDefaultIdentity<IdentityUser>(opts => { 
+                opts.SignIn.RequireConfirmedAccount = true;
+                opts.Password.RequiredLength = 8;
+                opts.Password.RequireDigit = false;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.SignIn.RequireConfirmedAccount = true;        
+            }).AddEntityFrameworkStores<IdentityAppIdentityDbContext>();
+
             services.AddScoped<IEmailSender, ConsoleEmailSender>();
             services.AddAuthentication()
                     .AddGoogle(options =>

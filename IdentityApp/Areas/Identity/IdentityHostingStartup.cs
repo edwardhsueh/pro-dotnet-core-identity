@@ -14,13 +14,8 @@ namespace IdentityApp.Areas.Identity
     {
         public void Configure(IWebHostBuilder builder)
         {
+            // should be empty here, db context moved to startup.cs
             builder.ConfigureServices((context, services) => {
-                services.AddDbContext<IdentityAppIdentityDbContext>(options =>
-                    options.UseSqlServer(
-                        context.Configuration.GetConnectionString("IdentityAppIdentityDbContextConnection")));
-
-                services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<IdentityAppIdentityDbContext>();
             });
         }
     }
