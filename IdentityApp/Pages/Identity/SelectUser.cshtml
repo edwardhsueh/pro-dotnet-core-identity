@@ -1,7 +1,7 @@
 @page "{label?}/{callback?}"
 @model IdentityApp.Pages.Identity.Admin.SelectUserModel
 @{
-    ViewBag.Workflow = Model.Callback ?? Model.Label ?? "List";
+    ViewData["workflow"] = Model.Callback ?? Model.Label ?? "List";
 }
 <form method="post" class="my-2">
     <div class="form-row">

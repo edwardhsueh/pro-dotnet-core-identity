@@ -32,7 +32,7 @@ namespace IdentityApp.Pages.Identity.Admin {
             if (!string.IsNullOrEmpty(Id) && ModelState.IsValid) {
                 IdentityUser user = await UserManager.FindByIdAsync(Id);
                 if (user != null) {
-                    user.UserName = userData.Username;
+                    user.UserName = userData.Email; // Keep UserName/Email the same
                     user.Email = userData.Email;
                     user.EmailConfirmed = true;
                     if (!string.IsNullOrEmpty(userData.PhoneNumber)) {

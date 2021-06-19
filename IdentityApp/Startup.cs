@@ -39,7 +39,20 @@ namespace IdentityApp {
                    Configuration["ConnectionStrings:IdentityAppIdentityDbContextConnection"]);
             });       
             // The user class is declared when configuring Identity in the Startup class. Here is the statement that sets up Identity in the example application: There is a default class, named IdentityUser
-            services.AddDefaultIdentity<IdentityUser>(opts => { 
+            // The AddEntityFrameworkStores method sets up the user store, and the generic type argument specifies the Entity Framework Core context that will be used to access the database.
+            // Caution is required because not all user stores support all of the Identity features, which is indicated by the set of optional interfaces that the user store has implemented. It is important to check that all the features you require are supported when you start a new project and when you change user store.    
+            // services.AddDefaultIdentity<IdentityUser, IdentityRole>(opts => { 
+            //     opts.SignIn.RequireConfirmedAccount = true;
+            //     opts.Password.RequiredLength = 8;
+            //     opts.Password.RequireDigit = false;
+            //     opts.Password.RequireLowercase = false;
+            //     opts.Password.RequireUppercase = false;
+            //     opts.Password.RequireNonAlphanumeric = false;
+            //     opts.SignIn.RequireConfirmedAccount = true;        
+            // }).AddEntityFrameworkStores<IdentityAppIdentityDbContext>();
+
+            //Support Role: The user store set up by the AddEntityFrameworkStores method does support roles but only when a role class has been selected, which isn’t possible with the AddDefaultIdentity method used previously.
+            services.AddIdentity<IdentityUser, IdentityRole>(opts => { 
                 opts.SignIn.RequireConfirmedAccount = true;
                 opts.Password.RequiredLength = 8;
                 opts.Password.RequireDigit = false;
@@ -48,6 +61,7 @@ namespace IdentityApp {
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.SignIn.RequireConfirmedAccount = true;        
             }).AddEntityFrameworkStores<IdentityAppIdentityDbContext>();
+
 
             services.AddScoped<IEmailSender, ConsoleEmailSender>();
             services.AddAuthentication()
