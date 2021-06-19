@@ -42,7 +42,11 @@ namespace IdentityApp.Pages.Identity.Admin {
                     EmailConfirmed = true
                 };
                 IdentityResult result = await UserManager.CreateAsync(userObject);
-                result.Process(ModelState);
+//                 result.Process(ModelState);
+                if (result.Process(ModelState)) {
+                    result = await UserManager.AddPasswordAsync(userObject, "mypasswd");
+                    result.Process(ModelState);
+                }
             }
             if (ModelState.IsValid) {
                 return RedirectToPage();

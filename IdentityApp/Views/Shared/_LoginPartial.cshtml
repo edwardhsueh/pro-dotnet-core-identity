@@ -3,12 +3,16 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-<ul class="navbar-nav">
+@* ASP.NET Core represents users with the ClaimsPrincipal class and a ClaimsPrincipal object for the current user is available through the User property defined by the Controller and RazorPageBase classes, which means the same features are available for the MVC Framework and Razor Pages. (The nav elements and the classes to which the elements are assigned apply styles from the Bootstrap CSS framework and are not related to Identity.) *@
+
+@* <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        @* <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a> *@
-        <a asp-page="/Identity/Index" class="nav-link bg-secondary text-white">@User.Identity.Name</a>
+        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+         <a asp-page="/Identity/SignOut" class="nav-link bg-secondary text-white">
+            Sign Out
+        </a>
     </li>
     <li class="nav-item">
         <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
@@ -25,4 +29,33 @@ else
         <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li>
 }
+</ul> *@
+@* <nav class="nav">
+    @if (SignInManager.IsSignedIn(User)) {
+        <a asp-page="/Identity/Index" class="nav-link bg-secondary text-white">
+                @User.Identity.Name
+        </a>
+        <a asp-page="/Identity/SignOut" class="nav-link bg-secondary text-white">
+            Sign Out
+        </a>
+    } else {
+        <a asp-page="/Identity/SignIn" class="nav-link bg-secondary text-white">
+            Sign In/Register
+        </a>
+    }
+</nav> *@
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User)) {
+        <li class="nav-item">
+            <a asp-page="/Identity/Index" class="nav-link text-dark">@User.Identity.Name</a>
+        </li>
+        <li class="nav-item">
+            <a asp-page="/Identity/SignOut" class="nav-link text-dark">Sign Out</a>
+        </li>
+    } else {
+        <li class="nav-item">
+            <a asp-page="/Identity/SignOut" class="nav-link text-dark">Sign In/Register</a>
+        </li>
+    }
 </ul>

@@ -15,10 +15,22 @@
 </head>
 <body>
     @if (showHeader) {
-        <nav class="navbar navbar-dark bg-@theme">
+@*         <nav class="navbar navbar-dark bg-@theme">
             <a class="navbar-brand text-white">IdentityApp</a>
             <div class="text-white"><partial name="_LoginPartial" /></div>
-        </nav>
+        </nav> *@
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark">IdentityApp</a>
+                        </li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
     }
     <h4 class="bg-@theme text-center text-white p-2">@banner</h4>
     <div class="my-2">

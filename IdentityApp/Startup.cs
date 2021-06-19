@@ -61,7 +61,14 @@ namespace IdentityApp {
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.SignIn.RequireConfirmedAccount = true;        
             }).AddEntityFrameworkStores<IdentityAppIdentityDbContext>();
+// LoginPath
+// This property is used to specify the URL to which the browser is directed following a challenge response so the user can sign into the application.
 
+// LogoutPath
+// This property is used to specify the URL to which the browser is directed so the user can sign into the application.
+
+// AccessDeniedPath
+// This property is used to specify the URL to which the browser is directed following a forbidden response, indicating that the user does not have access to the requested content.
 
             services.AddScoped<IEmailSender, ConsoleEmailSender>();
             services.AddAuthentication()
@@ -79,6 +86,11 @@ namespace IdentityApp {
                         facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                     });                    
             ;            
+            services.ConfigureApplicationCookie(opts => {
+                opts.LoginPath = "/Identity/SignIn";
+                opts.LogoutPath = "/Identity/SignOut";
+                opts.AccessDeniedPath = "/Identity/Forbidden";
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {

@@ -1,0 +1,24 @@
+@page
+@model IdentityApp.Pages.Identity.SignOutModel
+@{
+    ViewData["showNav"] = false;
+    ViewData["banner"] = "Sign Out";
+}
+@* The view part of the page checks to see if there is an authenticated user by reading the User.Identity.IsAuthenticated property. I explain how this property works in Part 2, but for now, it is enough to know that it returns true if the current request is authenticated. *@
+@if (User.Identity.IsAuthenticated) {
+    <form method="post">
+        <div class="text-center">
+            <h6>Click the button to sign out of the application</h6>
+            <button type="submit" class="btn btn-secondary">
+                Sign Out
+            </button>
+        </div>
+    </form>
+} else {
+    <div class="text-center">
+        <h6>You are signed out of the application</h6>
+        <a asp-page="SignIn" asp-route-returnUrl="" class="btn btn-secondary">
+            OK
+        </a>
+    </div>
+}
