@@ -51,7 +51,8 @@ namespace IdentityApp {
             //     opts.SignIn.RequireConfirmedAccount = true;        
             // }).AddEntityFrameworkStores<IdentityAppIdentityDbContext>();
 
-            //Support Role: The user store set up by the AddEntityFrameworkStores method does support roles but only when a role class has been selected, which isn’t possible with the AddDefaultIdentity method used previously.
+            //IdentityRole = > Support Role: The user store set up by the AddEntityFrameworkStores method does support roles but only when a role class has been selected, which isn’t possible with the AddDefaultIdentity method used previously.
+            // adds the AddDefaultTokenProviders method to the chain of calls that set up Identity. This method sets up the services that are used to generate the confirmation tokens sent to users, which I describe in detail in Part 2.
             services.AddIdentity<IdentityUser, IdentityRole>(opts => { 
                 opts.SignIn.RequireConfirmedAccount = true;
                 opts.Password.RequiredLength = 8;
@@ -60,17 +61,13 @@ namespace IdentityApp {
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.SignIn.RequireConfirmedAccount = true;        
-            }).AddEntityFrameworkStores<IdentityAppIdentityDbContext>();
-// LoginPath
-// This property is used to specify the URL to which the browser is directed following a challenge response so the user can sign into the application.
-
-// LogoutPath
-// This property is used to specify the URL to which the browser is directed so the user can sign into the application.
-
-// AccessDeniedPath
-// This property is used to specify the URL to which the browser is directed following a forbidden response, indicating that the user does not have access to the requested content.
+            }).AddEntityFrameworkStores<IdentityAppIdentityDbContext>()
+            .AddDefaultTokenProviders();;
 
             services.AddScoped<IEmailSender, ConsoleEmailSender>();
+            services.AddScoped<TokenUrlEncoderService>();
+            services.AddScoped<IdentityEmailService>();
+
             services.AddAuthentication()
                     .AddGoogle(options =>
                     {
@@ -86,11 +83,18 @@ namespace IdentityApp {
                         facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                     });                    
             ;            
+            // LoginPath
+            // This property is used to specify the URL to which the browser is directed following a challenge response so the user can sign into the application.
+            // LogoutPath
+            // This property is used to specify the URL to which the browser is directed so the user can sign into the application.
+            // AccessDeniedPath
+            // This property is used to specify the URL to which the browser is directed following a forbidden response, indicating that the user does not have access to the requested content.
             services.ConfigureApplicationCookie(opts => {
                 opts.LoginPath = "/Identity/SignIn";
                 opts.LogoutPath = "/Identity/SignOut";
                 opts.AccessDeniedPath = "/Identity/Forbidden";
             });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
