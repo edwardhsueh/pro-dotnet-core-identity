@@ -39,6 +39,10 @@ namespace IdentityApp.Pages.Identity.Admin {
                         user.PhoneNumber = userData.PhoneNumber;
                     }
                 }
+                /// <summary>
+                /// ASP.NET Core represents users with the ClaimsPrincipal class and a ClaimsPrincipal object for the current user is available through the User property defined by the Controller and RazorPageBase classes, which means the same features are available for the MVC Framework and Razor Pages
+                /// </summary>
+                /// <returns></returns>
                 IdentityResult result = await UserManager.UpdateAsync(user);
                 if (result.Process(ModelState)) {
                     return RedirectToPage();

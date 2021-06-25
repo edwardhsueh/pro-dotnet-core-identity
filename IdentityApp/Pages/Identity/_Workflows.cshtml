@@ -1,13 +1,22 @@
 @model (string workflow, string theme)
+@inject UserManager<IdentityUser> UserManager
 @using System
+@* ASP.NET Core represents users with the ClaimsPrincipal class and a ClaimsPrincipal object for the current user is available through the User property defined by the Controller and RazorPageBase classes, which means the same features are available for the MVC Framework and Razor Pages *@
 @{
     Func<string, string> getClass = (string feature) =>
         feature != null && feature.Equals(Model.workflow) ? "active" : "";
+    IdentityUser identityUser = await UserManager.GetUserAsync(User) ?? new IdentityUser();
     Console.WriteLine($"Model.workflow:{Model.workflow}");
 }
 <a class="btn btn-@Model.theme btn-block @getClass("Overview")" asp-page="Index">
     Overview
 </a>
+@if (await UserManager.HasPasswordAsync(identityUser)) {
+    <a class="btn btn-@Model.theme btn-block @getClass("PasswordChange")"
+            asp-page="UserPasswordChange">
+        Change Password
+    </a>
+}
 <a class="btn btn-@Model.theme btn-block @getClass("Features")" asp-page="Features" asp-route-id="">
     List Features
 </a><a class="btn btn-success btn-block @getClass("List")" asp-page="View" asp-route-id="">
