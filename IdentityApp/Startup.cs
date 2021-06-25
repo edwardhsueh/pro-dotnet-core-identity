@@ -22,6 +22,9 @@ namespace IdentityApp {
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllersWithViews();
+            //Use HttpContext from custom components
+            //IdentityEmailService
+            services.AddHttpContextAccessor();
             services.AddRazorPages();
             services.AddDbContext<ProductDbContext>(opts => {
                 opts.UseSqlServer(

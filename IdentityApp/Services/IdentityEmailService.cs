@@ -4,6 +4,15 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Routing;
 using System.Threading.Tasks;
 namespace IdentityApp.Services {
+    /// <summary>
+    /// Use HttpContext from custom components
+    /// IHttpContextAccessor used to access the HttpContext object outside of a Razor Page or controller
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="userMgr"></param>
+    /// <param name="contextAccessor"></param>
+    /// <param name="generator"></param>
+    /// <param name="encoder"></param>
     public class IdentityEmailService {
         public IdentityEmailService(IEmailSender sender,
                 UserManager<IdentityUser> userMgr,
