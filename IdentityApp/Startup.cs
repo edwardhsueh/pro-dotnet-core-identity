@@ -95,7 +95,8 @@ namespace IdentityApp {
                     });                    
             ;            
             /// <summary>
-            /// need to update the ASP.NET Core configuration. By default, ASP.NET Core will use the /Account/Login and /Account/Logout URLs for signing in and out of the application. I could have used the routing system to ensure that my new Razor Pages will receive requests to these URLs, but I have chosen to change the URLs that ASP.NET Core uses instead
+            /// need to update the ASP.NET Core configuration. By default, ASP.NET Core will use the /Account/Login and /Account/Logout URLs for signing in and out of the application. 
+            /// Could have used the routing system to ensure that my new Razor Pages will receive requests to these URLs, but I have chosen to change the URLs that ASP.NET Core uses instead
             /// LoginPath: This property is used to specify the URL to which the browser is directed following a challenge response so the user can sign into the application.
             /// LogoutPath: This property is used to specify the URL to which the browser is directed so the user can sign into the application.
             /// AccessDeniedPath: This property is used to specify the URL to which the browser is directed following a forbidden response, indicating that the user does not have access to the requested content.   

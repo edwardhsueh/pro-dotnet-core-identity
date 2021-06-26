@@ -1,14 +1,13 @@
 using IdentityApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using System;
-using Microsoft.AspNetCore.Authorization;
 namespace IdentityApp.Pages.Identity {
-    [AllowAnonymous]
-    public class UserPasswordRecoveryConfirmModel : UserPageModel {
-        public UserPasswordRecoveryConfirmModel(UserManager<IdentityUser> usrMgr,
+    [AllowAnonymous]
+    public class UserAccountCompleteModel : UserPageModel {
+        public UserAccountCompleteModel(UserManager<IdentityUser> usrMgr,
                 TokenUrlEncoderService tokenUrlEncoder) {
             UserManager = usrMgr;
             TokenUrlEncoder = tokenUrlEncoder;
@@ -32,10 +31,8 @@ namespace IdentityApp.Pages.Identity {
                 string decodedToken = TokenUrlEncoder.DecodeToken(Token);
                 IdentityResult result = await UserManager.ResetPasswordAsync(user,
                     decodedToken, Password);
-                Console.WriteLine($"password:{Password}");
-                if (result.Process(ModelState)) {
-                    TempData["message"] = "Password changed";
-                    return RedirectToPage();
+                if (result.Process(ModelState)) {
+                    return RedirectToPage("SignIn", new { });
                 }
             }
             return Page();
