@@ -12,8 +12,11 @@
     Overview
 </a>
 @if (await UserManager.HasPasswordAsync(identityUser)) {
-    <a class="btn btn-@Model.theme btn-block @getClass("PasswordChange")"
-            asp-page="UserPasswordChange">
+    <a class="btn btn-@Model.theme btn-block @getClass("PasswordChange")" asp-page="UserPasswordChange">
         Change Password
     </a>
 }
+<a class="btn btn-@Model.theme btn-block @getClass("UserDelete")"  asp-page="UserDelete">
+    Delete Account
+</a>
+
