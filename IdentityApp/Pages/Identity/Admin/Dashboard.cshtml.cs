@@ -24,10 +24,15 @@ namespace IdentityApp.Pages.Identity.Admin {
 
         public void OnGet() {
             UsersCount = UserManager.Users.Count();
+            UsersUnconfirmed = UserManager.Users
+                    .Where(u => !u.EmailConfirmed).Count();
             foreach (IdentityUser existingUser in UserManager.Users.ToList()) {
                 Console.WriteLine($"{existingUser.ToString()}");
             }
-        }
+            UsersLockedout = UserManager.Users
+                .Where(u => u.LockoutEnabled && u.LockoutEnd > System.DateTimeOffset.Now)
+                .Count();
+            }
         public async Task<IActionResult> OnPostAsync() {
             foreach (IdentityUser existingUser in UserManager.Users.ToList()) {
                 IdentityResult result = await UserManager.DeleteAsync(existingUser);

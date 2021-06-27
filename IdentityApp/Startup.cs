@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using IdentityApp.Services;
 using IdentityApp.Areas.Identity.Data;
+using System;
 
 namespace IdentityApp {
 
@@ -73,9 +74,18 @@ namespace IdentityApp {
                 opts.Password.RequireLowercase = false;
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireNonAlphanumeric = false;
-                opts.SignIn.RequireConfirmedAccount = true;        
+                // enable password wrong lockup
+                opts.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                opts.Lockout.MaxFailedAccessAttempts = 5;
+                opts.Lockout.AllowedForNewUsers = true;            
             }).AddEntityFrameworkStores<IdentityAppIdentityDbContext>()
-            .AddDefaultTokenProviders();;
+            .AddDefaultTokenProviders();
+            // A common requirement is to terminate any existing sessions when an account is lock out, which will prevent the user from using the application even if they had signed in before the lock started. 
+            // The key to implementing this feature is the security stamp, which is a random string that is changed every time an alternation to the user’s security data is made. The first step is to configure Identity so that it periodically validates the cookies presented by the user to see if the security stamp has changed, as shown in Listing 9-21.
+            // The validation feature is enabled by using the options pattern to assign an interval to the ValidationInterval property defined by the SecurityStampValidatorOptions class. I have chosen one minute for this example, but it is important to select an appropriate value for each project. Validation requires data to be retrieved from the user store, and if you set the interval too short, you will generate a large number of additional database queries, especially in applications with substantial concurrent users. On the other hand, setting the interval too long will extend the period a signed-in user will be able to continue using the application after their account is locked out.
+            services.Configure<SecurityStampValidatorOptions>(opts => {
+                opts.ValidationInterval = System.TimeSpan.FromMinutes(1);
+            });            
             services.AddScoped<TokenUrlEncoderService>();
             services.AddScoped<IdentityEmailService>();
 
