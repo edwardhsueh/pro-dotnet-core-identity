@@ -63,7 +63,8 @@ namespace IdentityApp {
             /// <summary>
             /// I have replaced the AddDefaultIdentity method the AddIdentity method. The AddIdentity method defines an additional generic type parameter that is used to specify the role class, which enables role support in the user store.
             ///  IdentityRole = > Support Role: The user store set up by the AddEntityFrameworkStores method does support roles but only when a role class has been selected, which isn’t possible with the AddDefaultIdentity method used previously.
-            /// adds the AddDefaultTokenProviders method to the chain of calls that set up Identity. This method sets up the services that are used to generate the confirmation tokens sent to users, which I describe in detail in Part 2.
+            /// The master list is managed using the role manager class, RoleManager<T> where T is the role class used by the application. In Chapter 7, I enabled support for roles by selecting the default role class, IdentityRole,
+            /// adds the AddDefaultTokenProviders method to the chain of calls that set up Identity. This method sets up the services that are used to generate the confirmation/recovery tokens sent to users, which I describe in detail in Part 2.
             /// ASP.NET Core represents users with the ClaimsPrincipal class and a ClaimsPrincipal object for the current user is available through the User property defined by the Controller and RazorPageBase classes, which means the same features are available for the MVC Framework and Razor Pages
             /// </summary>
             /// <value></value>    
