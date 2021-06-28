@@ -4,14 +4,19 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 namespace IdentityApp.Pages.Identity.Admin {
     public class RolesModel : AdminPageModel {
-        public RolesModel(UserManager<IdentityUser> userMgr, RoleManager<IdentityRole> roleMgr) {
+        public RolesModel(UserManager<IdentityUser> userMgr, RoleManager<IdentityRole> roleMgr,
+                          IConfiguration config      
+        ) {
             UserManager = userMgr;
             RoleManager = roleMgr;
+            DashboardRole = config["Dashboard:Role"] ?? "Dashboard";
         }
         [BindProperty(SupportsGet = true)]
         public string Id { get; set; }
+        public string DashboardRole { get; }
         public UserManager<IdentityUser> UserManager { get; set; }
         public RoleManager<IdentityRole> RoleManager { get; set; }
         public IList<string> CurrentRoles { get; set; } = new List<string>();

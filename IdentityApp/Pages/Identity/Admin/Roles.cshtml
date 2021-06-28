@@ -27,7 +27,7 @@
         }
         @*asp-page-handler="addToList"  => using OnPostAddToList *@
         <form method="post" asp-page-handler="addToList" id="addToListForm">
-                    <tr>
+            <tr>
                 <td>
                     <input class="form-control" name="role" />
                 </td>
@@ -36,21 +36,6 @@
                 </td>
             </tr>
         </form>
-        @* <tr>
-            <td>
-                <form method="post" asp-page-handler="addToList" id="addToListForm">
-                    <input class="form-control" name="role" />
-                    <button type="submit" class="btn btn-success">Add</button>
-                </form>
-            </td>
-
-            <td>
-                <button type="submit" class="btn btn-sm btn-success"
-                         form="addToListForm">
-                     Add
-                </button>
-            </td>
-        </tr> *@
     </tbody>
 </table>
 <table class="table table-sm table-striped table-bordered">
@@ -77,10 +62,10 @@
                             <form method="post" asp-page-handler="delete">
                                 <input type="hidden" asp-for="Id" />
                                 <input type="hidden" name="role" value="@role" />
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    Delete
-                                </button>
-                            </form>
+                                @* Prevent DashboardRole being Deleted *@
+                                <button type="submit" disabled="@(role== Model.DashboardRole)"
+                                         class="btn btn-sm btn-danger">
+                            </form>
                         </td>
                     </tr>
                 }

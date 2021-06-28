@@ -4,14 +4,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 namespace IdentityApp.Pages.Identity.Admin {
     public class DashboardModel : AdminPageModel {
     // Two of the most important parts of the Identity API are the user manager and the user class. The user manager provides access to the data that Identity manages, and the user class describes the data that Identity manages for a single user account.
 
 // The second key class is the user manager, which is UserManager<T>. The generic type argument, T, is used to specify the user class. Since the example application uses the built-in user class, the user manager will be UserManager<IdentityUser> . The user manager is configured as a service through the ASP.NET Core dependency injection feature. To access the user manager in the Razor Page model class, I added a constructor with a UserManager<IdentityUser> parameter, like this:
-        public DashboardModel(UserManager<IdentityUser> userMgr)
-            => UserManager = userMgr;
+        public DashboardModel(UserManager<IdentityUser> userMgr, IConfiguration configuration){
+            DashboardRole = configuration["Dashboard:Role"] ?? "Dashboard";
+             UserManager = userMgr;
+
+        }
         public UserManager<IdentityUser> UserManager { get; set; }
+        public string DashboardRole { get; set; }
 
 
         public int UsersCount { get; set; } = 0;
@@ -35,8 +40,15 @@ namespace IdentityApp.Pages.Identity.Admin {
             }
         public async Task<IActionResult> OnPostAsync() {
             foreach (IdentityUser existingUser in UserManager.Users.ToList()) {
-                IdentityResult result = await UserManager.DeleteAsync(existingUser);
-                result.Process(ModelState);
+                bool userRoleIsDashboard = await UserManager.IsInRoleAsync(existingUser, DashboardRole);
+                Console.WriteLine($"existUser.Email:{existingUser.Email}, userRoleIsDashboard:{userRoleIsDashboard}");
+                // make sure DashBoard Role is not deleted
+                if (emails.Contains(existingUser.Email) && !userRoleIsDashboard) {
+                    IdentityResult result= await UserManager.DeleteAsync(existingUser);
+                    result.Process(ModelState);
+                }    
+//                 IdentityResult result = await UserManager.DeleteAsync(existingUser);
+//                 result.Process(ModelState);
             }
 
             foreach (string email in emails) {

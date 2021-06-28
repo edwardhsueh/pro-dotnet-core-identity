@@ -2,7 +2,10 @@
 
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    string dashboardRole = Configuration["Dashboard:Role"] ?? "Dashboard";
+}    
 @* ASP.NET Core represents users with the ClaimsPrincipal class and a ClaimsPrincipal object for the current user is available through the User property defined by the Controller and RazorPageBase classes, which means the same features are available for the MVC Framework and Razor Pages. (The nav elements and the classes to which the elements are assigned apply styles from the Bootstrap CSS framework and are not related to Identity.) *@
 
 @* <ul class="navbar-nav">
@@ -47,9 +50,19 @@ else
 
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User)) {
-        <li class="nav-item">
-            <a asp-page="/Identity/Index" class="nav-link text-dark">@User.Identity.Name</a>
-        </li>
+        @if (User.IsInRole(dashboardRole)) {
+            <li class="nav-item">
+                <a asp-page="/Identity/Admin/Dashboard" class="nav-link bg-secondary text-white">
+                        @User.Identity.Name
+                </a>
+            </li>
+        } else {
+            <li class="nav-item">
+                <a asp-page="/Identity/Index" class="nav-link bg-secondary text-white">
+                        @User.Identity.Name
+                </a>
+            </li>
+        }    
         <li class="nav-item">
             <a asp-page="/Identity/SignOut" class="nav-link text-dark">Sign Out</a>
         </li>
