@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System;
+using IdentityApp.Models;
 namespace IdentityApp.Pages.Identity.Admin {
     public class ClaimsModel : AdminPageModel {
         public ClaimsModel(UserManager<IdentityUser> mgr)
@@ -19,6 +21,9 @@ namespace IdentityApp.Pages.Identity.Admin {
             }
             IdentityUser user = await UserManager.FindByIdAsync(Id);
             Claims = await UserManager.GetClaimsAsync(user);
+            foreach (Claim c in Claims){
+                Console.WriteLine($"name:{c.GetDisplayName()}:{c.Value}");
+            }
             return Page();
         }
         public async Task<IActionResult> OnPostAsync([Required] string task,
