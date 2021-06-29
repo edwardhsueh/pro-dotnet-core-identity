@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using System.Net;
+using System;
 namespace IdentityApp.Pages.Identity {
     [AllowAnonymous]
     public class SignInModel : UserPageModel {
@@ -43,6 +46,7 @@ namespace IdentityApp.Pages.Identity {
                         return RedirectToPage("SignUpConfirm");
                     }
                     TempData["message"] = "Sign In Not Allowed";
+                // When a user has set up an authenticator, the result of the PasswordSignInAsync method is a SignInResult object whose RequiresTwoFactor property is true 
                 } else if (result.RequiresTwoFactor) {
                     return RedirectToPage("SignInTwoFactor", new { ReturnUrl });
                 } else {
@@ -51,5 +55,34 @@ namespace IdentityApp.Pages.Identity {
             }
             return Page();
         }
+        // -----------------------------------------
+        // for signin using external provider
+        // -----------------------------------------
+        public IActionResult OnPostExternalAsync(string provider) {
+            string callbackUrl = Url.Page("SignIn", "Callback", new { ReturnUrl });
+            Console.WriteLine($"callbackUrl:{callbackUrl}, ReturnUrl:{ReturnUrl}");
+            AuthenticationProperties props = SignInManager.ConfigureExternalAuthenticationProperties(
+                   provider, callbackUrl);
+            return new ChallengeResult(provider, props);
+        }
+        public async Task<IActionResult> OnGetCallbackAsync() {
+            // This method returns a ExternalLoginInfo object that represents the user data provided by the external authentication service
+            ExternalLoginInfo info = await SignInManager.GetExternalLoginInfoAsync();
+            // This method signs the user into the application using a previously stored external login. The arguments are taken from the ExternalLoginInfo object returned by the GetExternalLoginInfoAsync method.
+            SignInResult result = await SignInManager.ExternalLoginSignInAsync(
+                info.LoginProvider, info.ProviderKey, true);
+            if (result.Succeeded) {
+                return Redirect(WebUtility.UrlDecode(ReturnUrl ?? "/"));
+            } else if (result.IsLockedOut) {
+                TempData["message"] = "Account Locked";
+            } else if (result.IsNotAllowed) {
+                TempData["message"] = "Sign In Not Allowed";
+            } else {
+                TempData["message"] = "Sign In Failed";
+            }
+            return RedirectToPage();
+        }
+
+
     }
 }

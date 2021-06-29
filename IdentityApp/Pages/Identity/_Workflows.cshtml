@@ -11,6 +11,7 @@
 <a class="btn btn-@Model.theme btn-block @getClass("Overview")" asp-page="Index">
     Overview
 </a>
+@* The navigation element will be shown only to users who have password, which will prevent users who sign in with external services from using an authenticator. *@
 @if (await UserManager.HasPasswordAsync(identityUser)) {
     <a class="btn btn-@Model.theme btn-block @getClass("PasswordChange")" asp-page="UserPasswordChange">
         Change Password
