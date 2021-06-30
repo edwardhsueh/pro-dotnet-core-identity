@@ -19,8 +19,7 @@ namespace IdentityApp.Pages.Identity {
         public async Task<string> ExternalProvider() =>
             (await UserManager.GetLoginsAsync(IdentityUser))
             .FirstOrDefault()?.ProviderDisplayName;
-// The sign-in manager’s ConfigureExternalAuthenticationProperties method is called to create an AuthenticationProperties object that will authenticate the user with the selected external provider. These properties are configured with a callback URL, which will be called when the user has authenticated themselves with their chosen service. The AuthenticationProperties object is used to create a challenge response, which will start the authentication process and redirect the user to the selected service.
-
+        // The sign-in manager’s ConfigureExternalAuthenticationProperties method is called to create an AuthenticationProperties object that will authenticate the user with the selected external provider. These properties are configured with a callback URL, which will be called when the user has authenticated themselves with their chosen service. The AuthenticationProperties object is used to create a challenge response, which will start the authentication process and redirect the user to the selected service.
         public IActionResult OnPost(string provider) {
             string callbackUrl = Url.Page("SignUpExternal", "Callback");
              AuthenticationProperties props = SignInManager.ConfigureExternalAuthenticationProperties(

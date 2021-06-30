@@ -1,9 +1,12 @@
 @page "{id?}"
 @model IdentityApp.Pages.Identity.Admin.DeleteModel
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@using System
 @{
+    
     ViewBag.Workflow = "Delete";
     string dashboardUser = Configuration["Dashboard:User"] ?? "admin@example.com";
+    Console.WriteLine($"{Model.IdentityUser.Email}, {dashboardUser}");
 }
 <div asp-validation-summary="All" class="text-danger m-2"></div>
 <form method="post">
@@ -12,10 +15,13 @@
         Delete @Model.IdentityUser.Email?
     </h5>
     <input type="hidden" name="id" value="@Model.IdentityUser.Id" />
-    <div class="text-center p-2">
-        @* Prevent dashBoard User Kill self *@
-        <button type="submit" class="btn btn-danger"
-            disabled="@(Model.IdentityUser.Email == dashboardUser)">
-        <a asp-page="Dashboard" class="btn btn-secondary">Cancel</a>
-    </div>
+        <div class="text-center p-2">
+            @* Prevent dashBoard User Kill self *@
+            @if (Model.IdentityUser.Email == dashboardUser){
+                <button type="submit" class="btn btn-danger" disabled>Delete</button>
+            } else {
+                <button type="submit" class="btn btn-danger">Delete</button>
+            }
+            <a asp-page="Dashboard" class="btn btn-secondary">Cancel</a>
+        </div>    
 </form>
