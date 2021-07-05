@@ -20,9 +20,8 @@ namespace IdentityApp {
         public Startup(IConfiguration config) => Configuration = config;
 
         private IConfiguration Configuration { get; set; }
-
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllersWithViews();
             //Use HttpContext from custom components
             //IdentityEmailService
             services.AddHttpContextAccessor();
@@ -111,14 +110,50 @@ namespace IdentityApp {
             /// LoginPath: This property is used to specify the URL to which the browser is directed following a challenge response so the user can sign into the application. for Example: authentication challenge can be issued when an unauthenticated user requests an endpoint that requires authentication
             /// LogoutPath: This property is used to specify the URL to which the browser is directed so the user can sign into the application.
             /// AccessDeniedPath: This property is used to specify the URL to which the browser is directed following a forbidden response, indicating that the user does not have access to the requested content. For Example, autorization.
+            /// The CookieAuthenticationOptions class defines an Events property, which returns an CookieAuthenticationEvents object that allows handlers to be defined for key events during authentication and authorization. There are four properties for dealing with API clients, as described in Table 12-3 .
+            // OnRedirectToLogin: 
+            // This property is assigned a handler that is called when the user should be redirected to the sign-in URL. The default handler sends a status code response for requests with the X-Requested-With header and performs the redirection for all other requests.
+            // OnRedirectToAccessDenied:
+            // This property is assigned a handler that is called when the user should be redirected to the access denied URL. The default handler sends a status code response for requests with the X-Requested-With header and performs the redirection for all other requests.
+            // OnRedirectToLogout:
+            // This property is assigned a handler that is called when the user should be redirected to the sign-out URL. The default handler sends a 200 OK response with a Location header set to the sign-out URL and performs the redirection for all other requests.
+            // OnRedirectToReturnUrl:
+            // This property is assigned a handler that is called when the user should be redirected to the URL that triggered a challenge response. The default handler sends a 200 OK response with a Location header set to the sign-out URL and performs the redirection for all other requests.
             /// </summary>
             /// <value></value>
             services.ConfigureApplicationCookie(opts => {
                 opts.LoginPath = "/Identity/SignIn";
                 opts.LogoutPath = "/Identity/SignOut";
                 opts.AccessDeniedPath = "/Identity/Forbidden";
+                // To change how API clients are handled by the example application
+                opts.Events.DisableRedirectionForApiClients();
             });
-
+            /// <summary>
+            /// Enabling CORS
+            /// Cross-Origin Resource Sharing (CORS) is a security mechanism to restrict JavaScript code from making requests to a domain other than the one that served the HTML page that contains it. This wasn’t an issue in earlier examples because the JavaScript client was delivered by the ASP.NET Core server, so the requests to the API controller were to the same domain. For this example, I am going to use a web server running on a different port, which is sufficiently different for CORS to block the request. Add the statements shown in Listing 12-15 to configure CORS so that the requests in this section will be allowed.
+            /// </summary>
+            /// <value></value>
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                builder =>
+                                {
+                                    builder.WithOrigins("http://localhost:5100", "http://127.0.0.1:5100")
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowCredentials();
+                                });
+            });   
+            services.AddControllersWithViews();
+      
+//             services.AddCors(opts => {
+//                 opts.AddDefaultPolicy(builder => {
+//                     builder.WithOrigins("http://localhost:5100")
+//                         .AllowAnyHeader()
+//                         .AllowAnyMethod()
+//                         .AllowCredentials();
+//                 });
+//             });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -129,7 +164,7 @@ namespace IdentityApp {
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
             app.UseAuthorization();
 
