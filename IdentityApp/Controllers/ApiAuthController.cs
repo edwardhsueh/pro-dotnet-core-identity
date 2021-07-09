@@ -43,9 +43,9 @@ namespace IdentityApp.Controllers {
                 }
                 SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor {
                     Subject = (await SignInManager.CreateUserPrincipalAsync(user)).Identities.First(),
-                    Expires = DateTime.Now.AddMinutes(int.Parse(Configuration["BearerTokens:ExpiryMins"])),
+                    Expires = DateTime.Now.AddMinutes(int.Parse(Configuration["JWTBearerTokens:ExpiryMins"])),
                     SigningCredentials = new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["BearerTokens:Key"])),
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWTBearerTokens:Key"])),
                         SecurityAlgorithms.HmacSha256Signature
                     )
                 };

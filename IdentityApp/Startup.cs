@@ -112,7 +112,7 @@ namespace IdentityApp {
                         opts.TokenValidationParameters.ValidateIssuer = false;
                         opts.TokenValidationParameters.IssuerSigningKey
                             = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                                Configuration["BearerTokens:Key"]));
+                                Configuration["JWTBearerTokens:Key"]));
                     });                                        
             ;            
             /// <summary>
