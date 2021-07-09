@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using IdentityApp.Services;
 using IdentityApp.Areas.Identity.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System;
 
 namespace IdentityApp {
@@ -102,7 +105,14 @@ namespace IdentityApp {
                     {
                         facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                         facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                    });                    
+                    })
+                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts => {
+                        opts.TokenValidationParameters.ValidateAudience = false;
+                        opts.TokenValidationParameters.ValidateIssuer = false;
+                        opts.TokenValidationParameters.IssuerSigningKey
+                            = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                                Configuration["BearerTokens:Key"]));
+                    });                                        
             ;            
             /// <summary>
             /// need to update the ASP.NET Core configuration. By default, ASP.NET Core will use the /Account/Login and /Account/Logout URLs for signing in and out of the application. 

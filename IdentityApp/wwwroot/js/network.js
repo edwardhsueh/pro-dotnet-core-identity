@@ -8,31 +8,39 @@ export const signIn = async function (email, password, callback, errorHandler) {
         ...baseRequestConfig,
         method: "POST",
         body: JSON.stringify({ email, password }),
-        headers: { "Content-Type": "application/json" }
+        headers: {
+            "Content-Type": "application/json"
+        }
     });
-    processResponse(response, async () =>
-        callback(await response.json()), errorHandler);
+    if (response.ok) {
+        let responseData = await response.json();
+        if (responseData.success) {
+            baseRequestConfig.headers = {
+                "Authorization": `Bearer ${responseData.token}`
+            }
+        }
+        processResponse(response, async () =>
+            callback(responseData, errorHandler));
+        return;
+    }
+    processResponse({ ok: false, status: "Auth Failed" }, async () =>
+        callback(responseData), errorHandler);
 }
 export const signOut = async function (callback) {
-    const response = await fetch(`${authUrl}/signout`, {
-        ...baseRequestConfig,
-        method: "POST"
-    });
-    processResponse(response, callback, callback);
+    //const response = await fetch(`${authUrl}/signout`, {
+    //    ...baseRequestConfig,
+    //    method: "POST"
+    //});
+    baseRequestConfig.headers = {};
+    processResponse({ ok: true }, callback, callback);
 }
 export const loadData = async function (callback, errorHandler) {
-    console.log("loadData 1:"+baseUrl);
-
     const response = await fetch(baseUrl, {
         ...baseRequestConfig,
         redirect: "manual"
     });
-    let result = response;
-    console.log("loadData 2:"+JSON.stringify(result));
-//     let result = await response.json();
-//     console.log("loadData response:"+JSON.stringify(result));
-//     processResponse(response, async () =>
-//         callback(result), errorHandler);
+    processResponse(response, async () =>
+        callback(await response.json()), errorHandler);
 }
 export const createProduct = async function (product, callback, errorHandler) {
     const response = await fetch(baseUrl, {
@@ -40,6 +48,7 @@ export const createProduct = async function (product, callback, errorHandler) {
         method: "POST",
         body: JSON.stringify(product),
         headers: {
+            ...baseRequestConfig.headers,
             "Content-Type": "application/json"
         }
     });
