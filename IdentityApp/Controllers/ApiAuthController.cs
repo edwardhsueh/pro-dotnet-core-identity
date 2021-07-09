@@ -23,6 +23,12 @@ namespace IdentityApp.Controllers {
             UserManager = usrMgr;
             Configuration = config;
         }
+/// <summary>
+/// The sign-in process has two key steps. The first step is to validate the password provided by the user. To do this without signing the user into the application, the sign-in manager’s CheckPasswordSignInAsync method is used. This method operates on IdentityUser objects, which are obtained from the store from the user manager.
+/// If the correct password has been provided, a token is created and sent back in the response. A SecurityTokenDescriptor object is created with the properties described in Table 12-5.
+/// </summary>
+/// <param name="user"></param>
+/// <returns></returns>
         [HttpPost("signin")]
         public async Task<object> ApiSignIn(
                 [FromBody] SignInCredentials creds) {
@@ -30,19 +36,21 @@ namespace IdentityApp.Controllers {
             SignInResult result = await SignInManager.CheckPasswordSignInAsync(user,
                 creds.Password, true);
             if (result.Succeeded) {
+                // The authentication handler set up by the AddJwtBearer method will validate tokens, but the application is responsible for generating them.
+                var temp = (await SignInManager.CreateUserPrincipalAsync(user)).Identities;
+                foreach(var t in temp){
+                    Console.WriteLine($"Name:{t.Name}, RoleClaimType:{t.RoleClaimType}, AuthenticationType :{t.AuthenticationType}, IsAuthenticated:{t.IsAuthenticated }, NameClaimType:{t.NameClaimType}");
+                }
                 SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor {
-                    Subject = (await SignInManager.CreateUserPrincipalAsync(user))
-                        .Identities.First(),
-                    Expires = DateTime.Now.AddMinutes(int.Parse(
-                        Configuration["BearerTokens:ExpiryMins"])),
+                    Subject = (await SignInManager.CreateUserPrincipalAsync(user)).Identities.First(),
+                    Expires = DateTime.Now.AddMinutes(int.Parse(Configuration["BearerTokens:ExpiryMins"])),
                     SigningCredentials = new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                            Configuration["BearerTokens:Key"])),
-                            SecurityAlgorithms.HmacSha256Signature)
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["BearerTokens:Key"])),
+                        SecurityAlgorithms.HmacSha256Signature
+                    )
                 };
                 JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-                SecurityToken secToken = new JwtSecurityTokenHandler()
-                    .CreateToken(descriptor);
+                SecurityToken secToken = new JwtSecurityTokenHandler().CreateToken(descriptor);
                 return new { success = true, token = handler.WriteToken(secToken)};
             }
             return new { success = false  };

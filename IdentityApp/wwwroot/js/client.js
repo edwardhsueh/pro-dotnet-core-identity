@@ -54,17 +54,17 @@ function createAuthPrompt(targetElement) {
         container.classList.add("m-2", "p-2", "text-center");
         const status = container.make("span");
         status.innerText = "Not signed in";
-        const button = container.make("button");
-        button.classList.add("btn", "btn-sm", "btn-secondary", "m-2");
-        button.innerText = "Sign In";
-        button.addEventListener("click", async () => {
+        const button1 = container.make("button");
+        button1.classList.add("btn", "btn-sm", "btn-secondary", "m-2");
+        button1.innerText = "Sign In as alice";
+        button1.addEventListener("click", async () => {
             if (!signedIn) {
                 await network.signIn("alice@example.com", "mypasswd",
                     response => {
                         if (response.success == true) {
                             signedIn = true;
-                            status.innerText = "Signed in";
-                            button.innerText = "Sign Out";
+                            status.innerText = "alice Signed in";
+                            button1.innerText = "Sign Out";
                             populateTable();
                         }
                     }, showError);
@@ -72,7 +72,32 @@ function createAuthPrompt(targetElement) {
                 await network.signOut(() => {
                     signedIn = false;
                     status.innerText = "Signed out";
-                    button.innerText = "Sign In";
+                    button1.innerText = "alice Sign In";
+                    createTableContents([]);
+                    populateTable();
+                });
+            }
+        });
+
+        const button2 = container.make("button");
+        button2.classList.add("btn", "btn-sm", "btn-secondary", "m-2");
+        button2.innerText = "bob Sign In";
+        button2.addEventListener("click", async () => {
+            if (!signedIn) {
+                await network.signIn("bob@example.com", "mypasswd",
+                    response => {
+                        if (response.success == true) {
+                            signedIn = true;
+                            status.innerText = "bob Signed in";
+                            button2.innerText = "Sign Out";
+                            populateTable();
+                        }
+                    }, showError);
+            } else {
+                await network.signOut(() => {
+                    signedIn = false;
+                    status.innerText = "Signed out";
+                    button2.innerText = "bob Sign In";
                     createTableContents([]);
                     populateTable();
                 });

@@ -86,12 +86,13 @@ namespace IdentityApp {
             // A common requirement is to terminate any existing sessions when an account is lock out, which will prevent the user from using the application even if they had signed in before the lock started. 
             // The key to implementing this feature is the security stamp, which is a random string that is changed every time an alternation to the user’s security data is made. The first step is to configure Identity so that it periodically validates the cookies presented by the user to see if the security stamp has changed, as shown in Listing 9-21.
             // The validation feature is enabled by using the options pattern to assign an interval to the ValidationInterval property defined by the SecurityStampValidatorOptions class. I have chosen one minute for this example, but it is important to select an appropriate value for each project. Validation requires data to be retrieved from the user store, and if you set the interval too short, you will generate a large number of additional database queries, especially in applications with substantial concurrent users. On the other hand, setting the interval too long will extend the period a signed-in user will be able to continue using the application after their account is locked out.
+            // The AddJwtBearer extension method adds an authentication handler that will use JWT tokens and use them to authenticate requests. JWT tokens are intended to securely describe claims between two parties, and there are lots of features to support that goal, both in terms of the data that a token contains and how that data is validated. When using JWT tokens to authenticate clients for an ASP.NET Core API controller, the role of the token is much simpler because the JavaScript client doesn’t process the contents of the token and just treats it as an opaque block of data that is included in HTTP requests to identify the client to ASP.NET Core. This means that I need only the most basic token features. I use the options pattern to set the ValidateAudience and ValidateIssuer properties to false, which reduces the amount of data I have to put into the token later. What is important is the ability to validate the cryptographic signature that tokens include, so I read the secret key from the configuration service and apply it using the options pattern.
             services.Configure<SecurityStampValidatorOptions>(opts => {
                 opts.ValidationInterval = System.TimeSpan.FromMinutes(1);
             });            
             services.AddScoped<TokenUrlEncoderService>();
             services.AddScoped<IdentityEmailService>();
-
+            // Support JWTBear Token
             services.AddAuthentication()
                     .AddGoogle(options =>
                     {
@@ -135,8 +136,6 @@ namespace IdentityApp {
                 opts.LoginPath = "/Identity/SignIn";
                 opts.LogoutPath = "/Identity/SignOut";
                 opts.AccessDeniedPath = "/Identity/Forbidden";
-                // To change how API clients are handled by the example application
-                opts.Events.DisableRedirectionForApiClients();
             });
             /// <summary>
             /// Enabling CORS
@@ -156,14 +155,6 @@ namespace IdentityApp {
             });   
             services.AddControllersWithViews();
       
-//             services.AddCors(opts => {
-//                 opts.AddDefaultPolicy(builder => {
-//                     builder.WithOrigins("http://localhost:5100")
-//                         .AllowAnyHeader()
-//                         .AllowAnyMethod()
-//                         .AllowCredentials();
-//                 });
-//             });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
