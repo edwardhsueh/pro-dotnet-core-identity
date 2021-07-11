@@ -29,9 +29,17 @@ namespace IdentityApp {
             //IdentityEmailService
             services.AddHttpContextAccessor();
             services.AddRazorPages();
-            services.AddDbContext<ProductDbContext>(opts => {
-                opts.UseSqlServer(
-                    Configuration["ConnectionStrings:AppDataConnection"]);
+            services.AddDbContext<ProductDbContext>(options => {
+                string DBType = Configuration["Database:Type"];
+                Console.WriteLine($"DBType:{DBType}");
+                if(DBType == "MSSql"){
+                    options.UseSqlServer(   
+                        Configuration["ConnectionStrings:AppDataConnection"]);
+                }
+                else{
+                    options.UseNpgsql(   
+                        Configuration["PsqlConnectionStrings:AppDataConnection"]);
+                }
             });
 
             services.AddHttpsRedirection(opts => {
@@ -41,8 +49,16 @@ namespace IdentityApp {
             // for Identity
             //
             services.AddDbContext<IdentityAppIdentityDbContext>(options => { 
-                options.UseSqlServer(
-                   Configuration["ConnectionStrings:IdentityAppIdentityDbContextConnection"]);
+                string DBType = Configuration["Database:Type"];
+                Console.WriteLine($"DBType:{DBType}");
+                if(DBType == "MSSql"){
+                    options.UseSqlServer(   
+                        Configuration["ConnectionStrings:IdentityAppIdentityDbContextConnection"]);
+                }
+                else{
+                    options.UseNpgsql(   
+                        Configuration["PsqlConnectionStrings:IdentityAppIdentityDbContextConnection"]);
+                }
             });       
             // have registered the email service before the call to the AddDefaultIdentity method so that my custom service takes precedence over the placeholder implementation in the Identity UI package.
             services.AddScoped<IEmailSender, ConsoleEmailSender>();
