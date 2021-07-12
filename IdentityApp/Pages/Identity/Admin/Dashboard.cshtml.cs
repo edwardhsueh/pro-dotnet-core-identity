@@ -32,12 +32,29 @@ namespace IdentityApp.Pages.Identity.Admin {
             UsersTwoFactor = UserManager.Users.Where(u => u.TwoFactorEnabled).Count();
             UsersUnconfirmed = UserManager.Users
                     .Where(u => !u.EmailConfirmed).Count();
+            int i =0;
             foreach (IdentityUser existingUser in UserManager.Users.ToList()) {
+                Console.WriteLine($"########## {i++} #############");
                 Console.WriteLine($"{existingUser.ToString()}");
+                Console.WriteLine($"LockoutEnabled:{existingUser.LockoutEnabled}");
+                Console.WriteLine($"LockoutEnd:{existingUser.LockoutEnd}");    
+                Console.WriteLine($"Now:{System.DateTimeOffset.Now}");    
+                bool result = existingUser.LockoutEnabled && (existingUser.LockoutEnd??= System.DateTimeOffset.Now) > System.DateTimeOffset.Now;
+                Console.WriteLine($"result:{result}");    
+                if(result){
+                     UsersLockedout++;
+                }
             }
-            UsersLockedout = UserManager.Users
-                .Where(u => u.LockoutEnabled && u.LockoutEnd > System.DateTimeOffset.Now)
-                .Count();
+            Console.WriteLine($"##########################");
+            Console.WriteLine($"UsersLockedout:{   UsersLockedout}");    
+            
+        //     UsersLockedout = UserManager.Users.Where(u => u.LockoutEnabled && ((u.LockoutEnd??= System.DateTimeOffset.Now) > System.DateTimeOffset.Now))
+        //     .Count();
+         
+        //        UsersLockedout = (from u in UserManager.Users
+        //                          where u.LockoutEnabled && (u.LockoutEnd??= System.DateTimeOffset.Now) > System.DateTimeOffset.Now 
+        //                          select u).ToList().Count();
+            
         }
     
         public async Task<IActionResult> OnPostAsync() {
