@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IdentityApp.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    [Migration("20210712022459_CreateProductionSchema")]
+    [Migration("20210712032738_CreateProductionSchema")]
     partial class CreateProductionSchema
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
