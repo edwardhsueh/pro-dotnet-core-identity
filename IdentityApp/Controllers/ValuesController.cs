@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace IdentityApp.Controllers {
     //Specifying Token Authentication in the API Controller
+    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     [ApiController]
     [Route("/api/data")]
+    // Specify Razor Page authentication
 //     [Authorize]
 public class ValuesController : ControllerBase {
         private ProductDbContext DbContext;
