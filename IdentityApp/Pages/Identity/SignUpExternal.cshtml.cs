@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System;
 namespace IdentityApp.Pages.Identity {
     [AllowAnonymous]
     public class SignUpExternalModel : UserPageModel {
@@ -34,8 +35,10 @@ namespace IdentityApp.Pages.Identity {
             ExternalLoginInfo info = await SignInManager.GetExternalLoginInfoAsync();
             string email = info?.Principal?.FindFirst(ClaimTypes.Email)?.Value;
             if (string.IsNullOrEmpty(email)) {
+                Console.WriteLine("External service has not provided an email address.");
                 return Error("External service has not provided an email address.");
             } else if ((await UserManager.FindByEmailAsync(email)) != null ) {
+                Console.WriteLine("An account already exists with your email address.");
                 return Error("An account already exists with your email address.");
             }
             IdentityUser identUser = new IdentityUser {
@@ -47,9 +50,13 @@ namespace IdentityApp.Pages.Identity {
             if (result.Succeeded) {
                 identUser = await UserManager.FindByEmailAsync(email);
                 result = await UserManager.AddLoginAsync(identUser, info);
+                Console.WriteLine("result.succeed");
                 return RedirectToPage(new { id = identUser.Id });
             }
-            return Error("An account could not be created.");
+            else {
+                Console.WriteLine("result.failed");
+                return Error("An account could not be created.");
+            }
         }
         public async Task<IActionResult> OnGetAsync(string id) {
             if (id == null) {
