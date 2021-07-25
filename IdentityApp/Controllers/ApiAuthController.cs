@@ -32,6 +32,7 @@ namespace IdentityApp.Controllers {
         [HttpPost("signin")]
         public async Task<object> ApiSignIn(
                 [FromBody] SignInCredentials creds) {
+            Console.WriteLine($"Email:{creds.Email}, Password:{creds.Password}");
             IdentityUser user = await UserManager.FindByEmailAsync(creds.Email);
             SignInResult result = await SignInManager.CheckPasswordSignInAsync(user,
                 creds.Password, true);
