@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System;
 using System.Text;
+using System.Security.Claims;
+using IdentityApp.Models;
 namespace IdentityApp.Controllers {
     [ApiController]
     [Route("/api/auth")]
@@ -41,6 +43,18 @@ namespace IdentityApp.Controllers {
                 var temp = (await SignInManager.CreateUserPrincipalAsync(user)).Identities;
                 foreach(var t in temp){
                     Console.WriteLine($"Name:{t.Name}, RoleClaimType:{t.RoleClaimType}, AuthenticationType :{t.AuthenticationType}, IsAuthenticated:{t.IsAuthenticated }, NameClaimType:{t.NameClaimType}");
+                    Console.WriteLine("#######################");
+                    Console.WriteLine("all claims 1");
+                    Console.WriteLine("#######################");
+                    foreach (Claim c in t.Claims) {
+                        Console.WriteLine($"Type:{c.GetDisplayName()}, Value:{c.Value}, Issuer:{c.Issuer}");
+                    }    
+                    Console.WriteLine("#######################");
+                    Console.WriteLine("all claims 2");
+                    Console.WriteLine("#######################");
+                    foreach (Claim c in t.Claims) {
+                        Console.WriteLine($"Type:{c.Type}, Value:{c.Value}, Issuer:{c.Issuer}");
+                    }    
                 }
                 SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor {
                     Subject = (await SignInManager.CreateUserPrincipalAsync(user)).Identities.First(),

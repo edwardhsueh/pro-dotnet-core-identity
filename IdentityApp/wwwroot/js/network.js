@@ -1,5 +1,5 @@
-const baseUrl = "https://localhost:44350/api/data";
-const authUrl = "https://localhost:44350/api/auth";
+const baseUrl = "https://localhost:5001/api/data";
+const authUrl = "https://localhost:5001/api/auth";
 const baseRequestConfig = {
     credentials: "include"
 }
