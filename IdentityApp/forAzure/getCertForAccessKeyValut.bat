@@ -1,4 +1,4 @@
-REM Read https://docs.microsoft.com/zh-tw/azure/vpn-gateway/vpn-gateway-certificates-point-to-site
+REM Read 
 REM run powerShell as administrator
 REM P2SRootCert
 call $cert = New-SelfSignedCertificate -Type Custom -KeySpec Signature `
